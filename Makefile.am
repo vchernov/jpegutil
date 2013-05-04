@@ -15,3 +15,9 @@ nobase_include_HEADERS = \
 	jpegutil/JpegHandler.h \
 	jpegutil/JpegDec.h \
 	jpegutil/JpegEnc.h
+
+check_PROGRAMS = tests/readwrite
+TESTS = $(check_PROGRAMS)
+
+tests_readwrite_SOURCES = tests/readwrite.cpp
+tests_readwrite_LDADD = libjpegutil.la -ljpeg
