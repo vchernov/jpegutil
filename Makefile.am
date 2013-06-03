@@ -10,21 +10,18 @@ libjpegutil_la_SOURCES = \
 	jpegutil/JpegDec.cpp \
 	jpegutil/JpegEnc.h \
 	jpegutil/JpegEnc.cpp \
+	jpegutil/MimeInfo.h \
+	jpegutil/MimeInfo.cpp \
 	jpegutil/MimeParser.h \
-	jpegutil/MimeParser.cpp \
-	jpegutil/MimeReader.h \
-	jpegutil/MimeReader.cpp \
-	jpegutil/MimeWriter.h \
-	jpegutil/MimeWriter.cpp
+	jpegutil/MimeParser.cpp
 
 nobase_include_HEADERS = \
 	jpegutil/JpegHandler.h \
 	jpegutil/JpegDec.h \
 	jpegutil/JpegEnc.h \
-	jpegutil/MimeParser.h \
-	jpegutil/MimeReader.h \
-	jpegutil/MimeWriter.h
-
+	jpegutil/MimeInfo.h \
+	jpegutil/MimeParser.h
+	
 check_PROGRAMS = tests/readwrite tests/mjpeg
 TESTS = $(check_PROGRAMS)
 

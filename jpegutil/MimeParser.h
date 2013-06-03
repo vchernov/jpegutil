@@ -1,27 +1,47 @@
 #ifndef MIMEPARSER_H_
 #define MIMEPARSER_H_
 
-#include <string>
-#include <vector>
+#include <sstream>
+#include <stdio.h>
+#include <stdint.h>
+
+#include "MimeInfo.h"
 
 namespace jpegutil
 {
 
 /**
- * Parser of MIME containers (Motion JPEG or MJPEG format).
+ * Parser of MIME containers.
  */
 class MimeParser
 {
 public:
-	typedef std::vector<std::string> HeaderContainer;
-
-	MimeParser();
+	MimeParser(MimeInfo* mimeInfo);
 	virtual ~MimeParser();
 
-	void setBoundary(const std::string& boundary);
-	const std::string& getBoundary() const;
+	MimeInfo* getMimeInfo() const;
+
+	/// Gets buffer with fully loaded content (or NULL if the content is not ready).
+	const uint8_t* getContent() const;
+
+	/// Returns true if all bytes of content have been loaded.
+	bool isContentReady() const;
+
+	size_t getContentLength() const;
+	const std::string& getContentType() const;
+
+	/// Sets to initial state.
+	void init();
+
+	void parse(char c);
+
+	bool readNext(char* buffer, size_t len, size_t& offset);
+	bool readNext(FILE* file);
 
 protected:
+	virtual void parseHeaders(const MimeInfo::HeaderContainer& headers);
+
+private:
 	enum State
 	{
 		S_BOUNDARY,
@@ -29,21 +49,29 @@ protected:
 		S_CONTENT,
 	};
 
-	static const std::string endOfLine;
-	static const std::string dash;
-
-	std::string getOpenDelimiter() const;
-
-	std::string boundary;
-	std::string lengthHeader;
-	std::string typeHeader;
-
-private:
 	// forbid copying
 	MimeParser(const MimeParser&);
 	void operator=(const MimeParser&);
+
+	MimeInfo* info;
+
+	State state;
+
+	std::string target; // current search target
+	size_t targetInd; // next character index at target to search
+
+	std::stringstream headerBuffer;
+	std::string lengthHeader;
+	std::string typeHeader;
+
+	size_t contentLength;
+	std::string contentType;
+
+	uint8_t* content; // buffer with enough size to store content data
+	size_t contentSize; // real size of content buffer, contentSize >= contentLength
+	size_t loadedSize; // size of loaded content
 };
 
-}
+} // namespace jpegutil
 
 #endif // MIMEPARSER_H_

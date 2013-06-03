@@ -6,7 +6,7 @@
 namespace jpegutil
 {
 
-class MimeWriter: public MimeParser
+class MimeWriter
 {
 public:
 	MimeWriter();
