@@ -61,15 +61,15 @@ private:
 	size_t targetInd; // next character index at target to search
 
 	std::stringstream headerBuffer;
-	std::string lengthHeader;
 	std::string typeHeader;
+	std::string lengthHeader;
 
-	size_t contentLength;
 	std::string contentType;
+	size_t contentLength;
+	size_t contentLoaded; // amount of loaded bytes of the content
 
-	uint8_t* content; // buffer with enough size to store content data
-	size_t contentSize; // real size of content buffer, contentSize >= contentLength
-	size_t loadedSize; // size of loaded content
+	uint8_t* content; // buffer with enough size to store the content data
+	size_t contentSize; // real size of the content buffer, contentSize >= contentLength
 };
 
 } // namespace jpegutil

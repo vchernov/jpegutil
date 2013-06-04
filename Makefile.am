@@ -29,4 +29,4 @@ tests_readwrite_SOURCES = tests/readwrite.cpp
 tests_readwrite_LDADD = libjpegutil.la -ljpeg
 
 tests_mjpeg_SOURCES = tests/mjpeg.cpp
-tests_mjpeg_LDADD = libjpegutil.la -ljpeg
+tests_mjpeg_LDADD = libjpegutil.la -ljpeg -ltimeutil

@@ -1,11 +1,14 @@
 #include <assert.h>
 #include <iostream>
 
+#include <timeutil/Timestamp.h>
+
 #include "../jpegutil/MimeInfo.h"
 #include "../jpegutil/MimeParser.h"
 
 int main(int argc, char** argv)
 {
+	using namespace timeutil;
 	using namespace jpegutil;
 
 	if (argc < 2)
@@ -22,15 +25,22 @@ int main(int argc, char** argv)
 	MimeInfo* info = new MimeInfo();
 	MimeParser* parser = new MimeParser(info);
 
-	size_t cnt = 0;
-	while (parser->readNext(file))
+	size_t num = 1;
+	while (true)
 	{
-		std::cout << "loaded: " << parser->getContentType();
-		std::cout << " " << parser->getContentLength();
+		Timestamp start = Timestamp::now();
+		if (!parser->readNext(file))
+			break;
+		Timestamp stop = Timestamp::now();
+
+		std::cout << num;
+		std::cout << " " << parser->getContentType();
+		std::cout << " size: " << parser->getContentLength();
+		std::cout << " time: " << (stop - start).toStr();
 		std::cout << std::endl;
-		cnt++;
+
+		num++;
 	}
-	std::cout << "amount: " << cnt << std::endl;
 
 	delete parser;
 	delete info;
