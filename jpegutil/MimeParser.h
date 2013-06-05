@@ -11,7 +11,7 @@ namespace jpegutil
 {
 
 /**
- * Parser of MIME containers.
+ * Parser of MIME containers (Motion JPEG or MJPEG format).
  */
 class MimeParser
 {
@@ -22,7 +22,7 @@ public:
 	MimeInfo* getMimeInfo() const;
 
 	/// Gets buffer with fully loaded content (or NULL if the content is not ready).
-	const uint8_t* getContent() const;
+	uint8_t* getContent() const;
 
 	/// Returns true if all bytes of content have been loaded.
 	bool isContentReady() const;
@@ -35,7 +35,20 @@ public:
 
 	void parse(char c);
 
+	/**
+	 * Reads next available content from buffer in memory.
+	 * @param[in]  buffer  The memory buffer with MIME encoded data.
+	 * @param[in]  len     The length of the buffer.
+	 * @param[out] offset  The offset in buffer, will be moved after invocation.
+	 * @return True if the new content has been reed, false otherwise.
+	 */
 	bool readNext(char* buffer, size_t len, size_t& offset);
+
+	/**
+	 * Reads next available content from MIME file.
+	 * @param file The file descriptor.
+	 * @return True if the new content has been reed, false otherwise.
+	 */
 	bool readNext(FILE* file);
 
 protected:

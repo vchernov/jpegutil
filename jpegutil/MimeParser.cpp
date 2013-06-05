@@ -1,6 +1,7 @@
 #include "MimeParser.h"
 
 #include <stdexcept>
+#include <string.h>
 
 namespace jpegutil
 {
@@ -130,6 +131,10 @@ void MimeParser::parse(char c)
 
 void MimeParser::parseHeaders(const MimeInfo::HeaderContainer& headers)
 {
+	contentLength = 0;
+	contentLoaded = 0;
+	contentType = "";
+
 	MimeInfo::HeaderContainer::const_iterator it = headers.begin();
 	MimeInfo::HeaderContainer::const_iterator end = headers.end();
 	for (; it != end; ++it)
@@ -147,7 +152,6 @@ void MimeParser::parseHeaders(const MimeInfo::HeaderContainer& headers)
 			ss >> contentType;
 	}
 
-	contentLoaded = 0;
 	if (contentLength > contentSize)
 	{
 		delete[] content;
@@ -158,13 +162,33 @@ void MimeParser::parseHeaders(const MimeInfo::HeaderContainer& headers)
 
 bool MimeParser::readNext(char* buffer, size_t len, size_t& offset)
 {
-	//TODO: implement me
+	bool loaded = false;
 	for (; offset < len; offset++)
 	{
-		char c = buffer[offset];
-		parse(c);
+		if (state == S_CONTENT)
+		{
+			// content reading speed up
+			size_t remLen = contentLength - contentLoaded;
+			size_t avail = len - offset;
+			if (remLen > avail)
+				remLen = avail;
+			memcpy(content + contentLoaded, buffer + offset, remLen);
+			contentLoaded += remLen;
+			offset += remLen;
+			if (contentLoaded == contentLength)
+			{
+				state = S_BOUNDARY;
+				loaded = true;
+				break;
+			}
+		}
+		else
+		{
+			char c = buffer[offset];
+			parse(c);
+		}
 	}
-	return false;
+	return loaded;
 }
 
 bool MimeParser::readNext(FILE* file)
@@ -177,17 +201,19 @@ bool MimeParser::readNext(FILE* file)
 			// content reading speed up
 			size_t remLen = contentLength - contentLoaded;
 			size_t readLen = fread(content + contentLoaded, 1, remLen, file);
-			if (readLen == remLen)
+			contentLoaded += readLen;
+			if (contentLoaded == contentLength)
 			{
-				contentLoaded += remLen;
 				state = S_BOUNDARY;
+				loaded = true;
 			}
-			loaded = true;
 			break;
 		}
-
-		char c = fgetc(file);
-		parse(c);
+		else
+		{
+			char c = fgetc(file);
+			parse(c);
+		}
 	}
 	return loaded;
 }
@@ -197,7 +223,7 @@ MimeInfo* MimeParser::getMimeInfo() const
 	return info;
 }
 
-const uint8_t* MimeParser::getContent() const
+uint8_t* MimeParser::getContent() const
 {
 	return isContentReady() ? content : NULL;
 }
