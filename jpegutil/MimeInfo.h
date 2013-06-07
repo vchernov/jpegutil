@@ -2,7 +2,6 @@
 #define MIMEINFO_H_
 
 #include <string>
-#include <vector>
 
 namespace jpegutil
 {
@@ -13,8 +12,6 @@ namespace jpegutil
 class MimeInfo
 {
 public:
-	typedef std::vector<std::string> HeaderContainer;
-
 	static const std::string endOfLine;
 	static const std::string dash;
 
@@ -26,13 +23,17 @@ public:
 
 	std::string getOpenDelimiter() const;
 
-	const HeaderContainer& getHeaders() const;
-	void addHeader(const std::string& header);
-	void clearHeaders();
+	const std::string& getTypeHeader() const;
+	void setTypeHeader(const std::string& typeHeader);
+
+	const std::string& getLengthHeader() const;
+	void setLengthHeader(const std::string& lengthHeader);
 
 private:
 	std::string boundary;
-	HeaderContainer headers;
+
+	std::string typeHeader;
+	std::string lengthHeader;
 };
 
 } // namespace jpegutil

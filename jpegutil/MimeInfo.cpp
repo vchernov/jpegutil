@@ -9,6 +9,9 @@ const std::string MimeInfo::dash = "--";
 MimeInfo::MimeInfo()
 {
 	boundary = "myboundary";
+
+	typeHeader = "Content-Type";
+	lengthHeader = "Content-Length";
 }
 
 MimeInfo::~MimeInfo()
@@ -30,19 +33,24 @@ std::string MimeInfo::getOpenDelimiter() const
 	return dash + boundary + endOfLine;
 }
 
-const MimeInfo::HeaderContainer& MimeInfo::getHeaders() const
+const std::string& MimeInfo::getTypeHeader() const
 {
-	return headers;
+	return typeHeader;
 }
 
-void MimeInfo::addHeader(const std::string& header)
+void MimeInfo::setTypeHeader(const std::string& typeHeader)
 {
-	headers.push_back(header);
+	this->typeHeader = typeHeader;
 }
 
-void MimeInfo::clearHeaders()
+const std::string& MimeInfo::getLengthHeader() const
 {
-	headers.clear();
+	return lengthHeader;
+}
+
+void MimeInfo::setLengthHeader(const std::string& lengthHeader)
+{
+	this->lengthHeader = lengthHeader;
 }
 
 } // namespace jpegutil

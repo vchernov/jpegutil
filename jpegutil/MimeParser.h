@@ -1,9 +1,11 @@
 #ifndef MIMEPARSER_H_
 #define MIMEPARSER_H_
 
-#include <sstream>
 #include <stdio.h>
 #include <stdint.h>
+#include <sstream>
+#include <string>
+#include <vector>
 
 #include "MimeInfo.h"
 
@@ -52,7 +54,9 @@ public:
 	bool readNext(FILE* file);
 
 protected:
-	virtual void parseHeaders(const MimeInfo::HeaderContainer& headers);
+	typedef std::vector<std::string> HeaderContainer;
+
+	virtual void parseHeaders(const HeaderContainer& headers);
 
 private:
 	enum State
@@ -74,8 +78,7 @@ private:
 	size_t targetInd; // next character index at target to search
 
 	std::stringstream headerBuffer;
-	std::string typeHeader;
-	std::string lengthHeader;
+	HeaderContainer headers;
 
 	std::string contentType;
 	size_t contentLength;

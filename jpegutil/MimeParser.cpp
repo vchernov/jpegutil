@@ -15,9 +15,6 @@ MimeParser::MimeParser(MimeInfo* mimeInfo) :
 	content = NULL;
 	contentSize = 0;
 
-	typeHeader = "Content-Type";
-	lengthHeader = "Content-Length";
-
 	init();
 }
 
@@ -40,11 +37,9 @@ void MimeParser::init()
 
 	state = S_BOUNDARY;
 
-	//*
 	delete[] content;
 	content = NULL;
 	contentSize = 0;
-	//*/
 }
 
 void MimeParser::parse(char c)
@@ -98,15 +93,15 @@ void MimeParser::parse(char c)
 
 			if (line == MimeInfo::endOfLine) // empty
 			{
-				parseHeaders(info->getHeaders());
-				info->clearHeaders();
+				parseHeaders(headers);
+				headers.clear();
 				state = S_CONTENT;
 			}
 			else
 			{
 				size_t usefulPart = line.length() - MimeInfo::endOfLine.length();
 				std::string header = line.substr(0, usefulPart);
-				info->addHeader(header);
+				headers.push_back(header);
 			}
 
 			headerBuffer.str("");
@@ -129,14 +124,14 @@ void MimeParser::parse(char c)
 	}
 }
 
-void MimeParser::parseHeaders(const MimeInfo::HeaderContainer& headers)
+void MimeParser::parseHeaders(const HeaderContainer& headers)
 {
 	contentLength = 0;
 	contentLoaded = 0;
 	contentType = "";
 
-	MimeInfo::HeaderContainer::const_iterator it = headers.begin();
-	MimeInfo::HeaderContainer::const_iterator end = headers.end();
+	HeaderContainer::const_iterator it = headers.begin();
+	HeaderContainer::const_iterator end = headers.end();
 	for (; it != end; ++it)
 	{
 		std::stringstream ss(*it);
@@ -145,11 +140,11 @@ void MimeParser::parseHeaders(const MimeInfo::HeaderContainer& headers)
 		if (!std::getline(ss, descr, ':'))
 			continue;
 
-		if (descr == lengthHeader)
-			ss >> contentLength;
-
-		if (descr == typeHeader)
+		if (descr == info->getTypeHeader())
 			ss >> contentType;
+
+		if (descr == info->getLengthHeader())
+			ss >> contentLength;
 	}
 
 	if (contentLength > contentSize)
@@ -167,7 +162,7 @@ bool MimeParser::readNext(char* buffer, size_t len, size_t& offset)
 	{
 		if (state == S_CONTENT)
 		{
-			// content reading speed up
+			// speed up content reading
 			size_t remLen = contentLength - contentLoaded;
 			size_t avail = len - offset;
 			if (remLen > avail)
@@ -175,6 +170,7 @@ bool MimeParser::readNext(char* buffer, size_t len, size_t& offset)
 			memcpy(content + contentLoaded, buffer + offset, remLen);
 			contentLoaded += remLen;
 			offset += remLen;
+
 			if (contentLoaded == contentLength)
 			{
 				state = S_BOUNDARY;
@@ -198,10 +194,11 @@ bool MimeParser::readNext(FILE* file)
 	{
 		if (state == S_CONTENT)
 		{
-			// content reading speed up
+			// speed up content reading
 			size_t remLen = contentLength - contentLoaded;
 			size_t readLen = fread(content + contentLoaded, 1, remLen, file);
 			contentLoaded += readLen;
+
 			if (contentLoaded == contentLength)
 			{
 				state = S_BOUNDARY;

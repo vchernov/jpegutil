@@ -5,29 +5,35 @@
 
 #include "../jpegutil/MimeInfo.h"
 #include "../jpegutil/MimeParser.h"
+#include "../jpegutil/MimeWriter.h"
 #include "../jpegutil/JpegDec.h"
 
 int main(int argc, char** argv)
 {
-	using namespace timeutil;
 	using namespace jpegutil;
+	using namespace timeutil;
 
 	if (argc < 2)
 	{
 		std::cout << "MJPEG test skipped, no file specified" << std::endl;
 		return 0;
 	}
-	const char* fn = argv[1];
-	std::cout << "MJPEG file: " << fn << std::endl;
-
-	FILE* file = fopen(fn, "rb");
-	assert(file != NULL);
+	const char* testFileName = argv[1];
+	const char* copyFileName = "copy.mjpeg";
+	std::cout << "MJPEG file: " << testFileName << std::endl;
 
 	MimeInfo* info = new MimeInfo();
 	MimeParser* parser = new MimeParser(info);
+	MimeWriter* writer = new MimeWriter(info);
 	JpegDec* dec = new JpegDec();
 
-	fseek(file, 0, SEEK_SET);
+	FILE* inFile = fopen(testFileName, "rb");
+	assert(inFile != NULL);
+
+	FILE* outFile = fopen(copyFileName, "wb");
+	assert(outFile != NULL);
+
+	size_t origCount = 0;
 	size_t num = 1;
 	while (true)
 	{
@@ -35,13 +41,18 @@ int main(int argc, char** argv)
 		int width, height;
 
 		Timestamp start = Timestamp::now();
-		if (!parser->readNext(file))
+		if (!parser->readNext(inFile))
 			break;
 		if (parser->getContentType() == "image/jpeg")
+		{
 			assert(dec->decode(parser->getContent(), parser->getContentLength(), img, width, height));
+			origCount++;
+		}
 		Timestamp stop = Timestamp::now();
 
 		delete[] img;
+
+		writer->write(parser->getContent(), parser->getContentLength(), parser->getContentType(), outFile);
 
 		std::cout << num;
 		std::cout << " " << parser->getContentType();
@@ -52,14 +63,19 @@ int main(int argc, char** argv)
 		num++;
 	}
 
+	fclose(outFile);
+	fclose(inFile);
+
+	FILE* testFile = fopen(copyFileName, "rb");
+	assert(testFile != NULL);
+
 	// tests correctness of reading from buffer
-	fseek(file, 0, SEEK_SET);
-	const size_t bufferSize = 1024;
+	const size_t bufferSize = 4096;
 	char* buffer = new char[bufferSize];
-	size_t cnt = 0;
-	while (!feof(file))
+	size_t copyCount = 0;
+	while (!feof(testFile))
 	{
-		size_t readLen = fread(buffer, 1, bufferSize, file);
+		size_t readLen = fread(buffer, 1, bufferSize, testFile);
 		size_t offset = 0;
 		while (offset < readLen)
 		{
@@ -71,7 +87,7 @@ int main(int argc, char** argv)
 					int width, height;
 
 					assert(dec->decode(parser->getContent(), parser->getContentLength(), img, width, height));
-					cnt++;
+					copyCount++;
 
 					delete[] img;
 				}
@@ -79,12 +95,15 @@ int main(int argc, char** argv)
 		}
 	}
 	delete[] buffer;
-	std::cout << "count: " << cnt << std::endl;
+
+	fclose(testFile);
+
+	assert(copyCount == origCount);
+	std::cout << "MJPEG test complete" << std::endl;
 
 	delete dec;
 	delete parser;
+	delete writer;
 	delete info;
-
-	fclose(file);
 	return 0;
 }
