@@ -24,12 +24,18 @@ nobase_include_HEADERS = \
 	jpegutil/MimeInfo.h \
 	jpegutil/MimeParser.h \
 	jpegutil/MimeWriter.h
-	
-check_PROGRAMS = tests/readwrite tests/mjpeg
-TESTS = $(check_PROGRAMS)
+
+libjpegutil_la_LDFLAGS = -no-undefined \
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
+
+TESTS = tests/readwrite tests/mjpeg
+check_PROGRAMS = $(TESTS)
 
 tests_readwrite_SOURCES = tests/readwrite.cpp
 tests_readwrite_LDADD = libjpegutil.la -ljpeg
 
 tests_mjpeg_SOURCES = tests/mjpeg.cpp
 tests_mjpeg_LDADD = libjpegutil.la -ljpeg -ltimeutil
+
+.PHONY: check-norun
+check-norun: $(check_PROGRAMS)

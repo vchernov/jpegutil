@@ -39,11 +39,13 @@ public:
 	 */
 	bool decode(uint8_t* buffer, size_t len, uint8_t*& img, int& width, int& height);
 
+	bool decodeI420(FILE* f, uint8_t*& img, int& width, int& height);
+
 private:
 	jpeg_decompress_struct decInfo;
 
-	JSAMPROW row;
-	size_t rowSize;
+	JSAMPLE* cache;
+	size_t cacheSize;
 
 	bool decode(uint8_t*& img, int& width, int& height);
 };
