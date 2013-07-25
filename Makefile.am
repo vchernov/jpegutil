@@ -28,11 +28,14 @@ nobase_include_HEADERS = \
 libjpegutil_la_LDFLAGS = -no-undefined \
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 
-TESTS = tests/readwrite tests/mjpeg
+TESTS = tests/readwrite tests/subsample tests/mjpeg
 check_PROGRAMS = $(TESTS)
 
 tests_readwrite_SOURCES = tests/readwrite.cpp
 tests_readwrite_LDADD = libjpegutil.la -ljpeg
+
+tests_subsample_SOURCES = tests/subsample.cpp
+tests_subsample_LDADD = libjpegutil.la -ljpeg
 
 tests_mjpeg_SOURCES = tests/mjpeg.cpp
 tests_mjpeg_LDADD = libjpegutil.la -ljpeg -ltimeutil

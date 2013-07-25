@@ -24,19 +24,22 @@ public:
 
 	/**
 	 * Sets the color space of the images to be worked with.
-	 * @param[in] colorSpace The color space. Can be: JCS_GRAYSCALE, JCS_RGB, JCS_YCbCr, or JCS_CMYK.
+	 *
+	 * @param[in] colorSpace  the color space. Can be: JCS_GRAYSCALE, JCS_RGB, JCS_YCbCr, or JCS_CMYK.
 	 */
 	void setColorSpace(J_COLOR_SPACE colorSpace);
 
 	/**
 	 * Gets the current color space.
-	 * @return The color space value.
+	 *
+	 * @return  the color space value
 	 */
 	J_COLOR_SPACE getColorSpace() const;
 
 	/**
 	 * Gets a number of color components according to the current color space.
-	 * @return The number of components for supported color spaces, or 0 for unsupported.
+	 *
+	 * @return  the number of components for supported color spaces, or 0 for unsupported
 	 */
 	int getNumComponents() const;
 

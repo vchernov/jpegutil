@@ -8,13 +8,11 @@ int main(int, char**)
 {
 	using namespace jpegutil;
 
-	std::cout << "libjpeg version: " << JPEG_LIB_VERSION << std::endl;
-
 	const char* fn = "test.jpeg";
 	const int imgWidth = 512;
 	const int imgHeight = 256;
-	const int buffLen = imgWidth * imgHeight * 3;
 
+	const int buffLen = imgWidth * imgHeight * 3;
 	uint8_t* img = new uint8_t[buffLen];
 	for (int i = 0; i < buffLen; i++)
 		img[i] = rand() % 255;
