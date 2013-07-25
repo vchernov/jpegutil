@@ -8,12 +8,41 @@ JpegEnc::JpegEnc()
 	encInfo.err = jpeg_std_error(&errMgr);
 	jpeg_create_compress(&encInfo);
 
+	colorSpace = JCS_RGB;
+	numComponents = 3;
+
 	quality = 80;
 }
 
 JpegEnc::~JpegEnc()
 {
 	jpeg_destroy_compress(&encInfo);
+}
+
+void JpegEnc::setColorSpace(J_COLOR_SPACE colorSpace, int numComponents)
+{
+	this->colorSpace = colorSpace;
+	this->numComponents = numComponents;
+}
+
+J_COLOR_SPACE JpegEnc::getColorSpace() const
+{
+	return colorSpace;
+}
+
+int JpegEnc::getNumComponents() const
+{
+	return numComponents;
+}
+
+void JpegEnc::setQuality(int quality)
+{
+	this->quality = quality;
+}
+
+int JpegEnc::getQuality() const
+{
+	return quality;
 }
 
 bool JpegEnc::encode(uint8_t* img, int width, int height, FILE* file)
@@ -38,7 +67,7 @@ bool JpegEnc::encode(uint8_t* img, int width, int height)
 	encInfo.image_width = width;
 	encInfo.image_height = height;
 	encInfo.in_color_space = colorSpace;
-	encInfo.input_components = getNumComponents();
+	encInfo.input_components = numComponents;
 	jpeg_set_defaults(&encInfo);
 	jpeg_set_quality(&encInfo, quality, TRUE);
 
@@ -54,16 +83,6 @@ bool JpegEnc::encode(uint8_t* img, int width, int height)
 
 	jpeg_finish_compress(&encInfo);
 	return true;
-}
-
-void JpegEnc::setQuality(int quality)
-{
-	this->quality = quality;
-}
-
-int JpegEnc::getQuality() const
-{
-	return quality;
 }
 
 } // namespace jpegutil

@@ -4,12 +4,14 @@ EXTRA_DIST = m4/NOTES
 lib_LTLIBRARIES = libjpegutil.la
 
 libjpegutil_la_SOURCES = \
-	jpegutil/JpegHandler.h \
-	jpegutil/JpegHandler.cpp \
+	jpegutil/jpegutil.h \
+	jpegutil/jpegutil.cpp \
 	jpegutil/JpegDec.h \
 	jpegutil/JpegDec.cpp \
 	jpegutil/JpegEnc.h \
 	jpegutil/JpegEnc.cpp \
+	jpegutil/JpegDecPlanarYCbCr.h \
+	jpegutil/JpegDecPlanarYCbCr.cpp \
 	jpegutil/MimeInfo.h \
 	jpegutil/MimeInfo.cpp \
 	jpegutil/MimeParser.h \
@@ -18,9 +20,10 @@ libjpegutil_la_SOURCES = \
 	jpegutil/MimeWriter.cpp
 
 nobase_include_HEADERS = \
-	jpegutil/JpegHandler.h \
+	jpegutil/jpegutil.h \
 	jpegutil/JpegDec.h \
 	jpegutil/JpegEnc.h \
+	jpegutil/JpegDecPlanarYCbCr.h \
 	jpegutil/MimeInfo.h \
 	jpegutil/MimeParser.h \
 	jpegutil/MimeWriter.h

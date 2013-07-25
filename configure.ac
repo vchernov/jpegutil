@@ -9,7 +9,7 @@ AC_SUBST(LT_CURRENT)
 AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
 
-AC_CONFIG_SRCDIR([jpegutil/JpegDec.cpp])
+AC_CONFIG_SRCDIR([jpegutil/jpegutil.h])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])

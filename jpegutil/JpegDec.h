@@ -1,19 +1,39 @@
 #ifndef JPEGDEC_H_
 #define JPEGDEC_H_
 
-#include "JpegHandler.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
+
+#include <jpeglib.h>
 
 namespace jpegutil
 {
 
 /**
  * JPEG decoder.
+ *
+ * The color space by default is RGB.
  */
-class JpegDec: public JpegHandler
+class JpegDec
 {
 public:
 	JpegDec();
 	virtual ~JpegDec();
+
+	/**
+	 * Sets the color space of the images to be worked with.
+	 *
+	 * @param colorSpace  the color space. Can be: JCS_GRAYSCALE, JCS_RGB, JCS_YCbCr, or JCS_CMYK.
+	 */
+	void setColorSpace(J_COLOR_SPACE colorSpace);
+
+	/**
+	 * Gets the current color space.
+	 *
+	 * @return  the color space identifier
+	 */
+	J_COLOR_SPACE getColorSpace() const;
 
 	/**
 	 * Decodes a JPEG image from a memory buffer.
@@ -49,8 +69,6 @@ public:
 	 */
 	bool decode(const char* path, uint8_t*& img, int& width, int& height);
 
-	bool decodeI420(FILE* f, uint8_t*& img, int& width, int& height);
-
 private:
 	JpegDec(const JpegDec&);
 	void operator=(const JpegDec&);
@@ -58,9 +76,9 @@ private:
 	bool decode(uint8_t*& img, int& width, int& height);
 
 	jpeg_decompress_struct decInfo;
+	jpeg_error_mgr errMgr;
 
-	JSAMPLE* cache;
-	size_t cacheSize;
+	J_COLOR_SPACE colorSpace;
 };
 
 } // namespace jpegutil
