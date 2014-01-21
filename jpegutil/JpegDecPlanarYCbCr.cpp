@@ -21,7 +21,7 @@ JpegDecPlanarYCbCr::~JpegDecPlanarYCbCr()
 
 bool JpegDecPlanarYCbCr::decodeI420(FILE* file, uint8_t*& img, int& width, int& height)
 {
-	jpeg_stdio_src(&decInfo, file);
+	/*jpeg_stdio_src(&decInfo, file);
 
 	jpeg_read_header(&decInfo, TRUE);
 	decInfo.out_color_space = JCS_YCbCr;
@@ -92,7 +92,7 @@ bool JpegDecPlanarYCbCr::decodeI420(FILE* file, uint8_t*& img, int& width, int& 
 	width = decInfo.output_width;
 	height = decInfo.output_height;
 
-	jpeg_finish_decompress(&decInfo);
+	jpeg_finish_decompress(&decInfo);*/
 	return true;
 }
 
