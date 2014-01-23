@@ -1,12 +1,1 @@
-/aclocal.m4
-/autom4te.cache
-/config.h.in
-/configure
-
-Makefile.in
-
-/m4/*
-!/m4/NOTES
-
 /build*/
-
