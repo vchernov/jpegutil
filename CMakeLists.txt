@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 2.8)
 
 project(jpegutil)
 
+if (CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
+endif()
+
 find_package(JPEG REQUIRED)
 
 include_directories(${JPEG_INCLUDE_DIR})
@@ -35,7 +39,14 @@ install(TARGETS jpegutil
 
 enable_testing()
 
-add_executable(test_readwrite tests/readwrite.cpp)
-target_link_libraries(test_readwrite jpegutil)
+add_executable(readwrite tests/readwrite.cpp)
+target_link_libraries(readwrite jpegutil)
+add_test(ReadWrite readwrite)
 
-add_test(ReadWrite test_readwrite)
+add_executable(mjpeg tests/mjpeg.cpp)
+target_link_libraries(mjpeg jpegutil)
+add_test(MJPEG mjpeg)
+
+add_executable(subsample tests/subsample.cpp)
+target_link_libraries(subsample jpegutil)
+add_test(Subsample subsample)

@@ -6,12 +6,7 @@
 
 #include <jpeglib.h>
 
-#include "JpegDec.h"
-#include "JpegEnc.h"
-#include "JpegDecPlanarYCbCr.h"
-
-namespace jpegutil
-{
+namespace jpegutil {
 
 /**
  * Gets a number of color components for the given color space.
@@ -21,6 +16,6 @@ namespace jpegutil
  */
 int getNumComponents(J_COLOR_SPACE colorSpace);
 
-} // namespace jpegutil
+}
 
 #endif // JPEGUTIL_H_

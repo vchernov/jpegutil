@@ -3,39 +3,37 @@
 
 #include <string>
 
-namespace jpegutil
-{
+namespace jpegutil {
 
 /**
  * Information for MIME container.
  */
-class MimeInfo
-{
+class MimeInfo {
 public:
-	static const std::string endOfLine;
-	static const std::string dash;
+    static const std::string endOfLine;
+    static const std::string dash;
 
-	MimeInfo();
-	virtual ~MimeInfo();
+    MimeInfo();
+    virtual ~MimeInfo();
 
-	const std::string& getBoundary() const;
-	void setBoundary(const std::string& boundary);
+    const std::string& getBoundary() const;
+    void setBoundary(const std::string& boundary);
 
-	std::string getOpenDelimiter() const;
+    std::string getOpenDelimiter() const;
 
-	const std::string& getTypeHeader() const;
-	void setTypeHeader(const std::string& typeHeader);
+    const std::string& getTypeHeader() const;
+    void setTypeHeader(const std::string& typeHeader);
 
-	const std::string& getLengthHeader() const;
-	void setLengthHeader(const std::string& lengthHeader);
+    const std::string& getLengthHeader() const;
+    void setLengthHeader(const std::string& lengthHeader);
 
 private:
-	std::string boundary;
+    std::string boundary;
 
-	std::string typeHeader;
-	std::string lengthHeader;
+    std::string typeHeader;
+    std::string lengthHeader;
 };
 
-} // namespace jpegutil
+}
 
 #endif // MIMEINFO_H_

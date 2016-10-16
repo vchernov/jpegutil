@@ -7,80 +7,76 @@
 
 #include <jpeglib.h>
 
-namespace jpegutil
-{
+namespace jpegutil {
 
 /**
  * JPEG decoder.
- *
- * The color space by default is RGB.
  */
-class JpegDec
-{
+class JpegDec {
 public:
-	JpegDec();
-	virtual ~JpegDec();
+    JpegDec();
+    virtual ~JpegDec();
 
-	/**
-	 * Sets the color space of the images to be worked with.
-	 *
-	 * @param colorSpace  the color space. Can be: JCS_GRAYSCALE, JCS_RGB, JCS_YCbCr, or JCS_CMYK.
-	 */
-	void setColorSpace(J_COLOR_SPACE colorSpace);
+    JpegDec(const JpegDec&) = delete;
+    void operator=(const JpegDec&) = delete;
 
-	/**
-	 * Gets the current color space.
-	 *
-	 * @return  the color space identifier
-	 */
-	J_COLOR_SPACE getColorSpace() const;
+    /**
+     * Sets the color space of the images to be worked with.
+     *
+     * @param colorSpace  the color space. Can be: JCS_GRAYSCALE, JCS_RGB, JCS_YCbCr, or JCS_CMYK.
+     */
+    void setColorSpace(J_COLOR_SPACE colorSpace);
 
-	/**
-	 * Decodes a JPEG image from a memory buffer.
-	 *
-	 * @param[in]  buffer  the pointer to the buffer with encoded image
-	 * @param[in]  len     the size of the buffer
-	 * @param[out] img     the decoded raw image. The memory is allocated inside the function.
-	 * @param[out] width   the width of the decoded image
-	 * @param[out] height  the height of the decoded image
-	 * @return             true if success, false if failed
-	 */
-	bool decode(uint8_t* buffer, size_t len, uint8_t*& img, int& width, int& height);
+    /**
+     * Gets the current color space.
+     *
+     * @return  the color space identifier
+     */
+    J_COLOR_SPACE getColorSpace() const;
 
-	/**
-	 * Reads and decodes a JPEG image through file descriptor.
-	 *
-	 * @param[in]  file    the file descriptor
-	 * @param[out] img     the decoded raw image. The memory is allocated inside the function.
-	 * @param[out] width   the width of the decoded image
-	 * @param[out] height  the height of the decoded image
-	 * @return             true if success, false if failed
-	 */
-	bool decode(FILE* file, uint8_t*& img, int& width, int& height);
+    /**
+     * Decodes a JPEG image from a memory buffer.
+     *
+     * @param[in]  buffer  the pointer to the buffer with encoded image
+     * @param[in]  len     the size of the buffer
+     * @param[out] img     the decoded raw image. The memory is allocated inside the function.
+     * @param[out] width   the width of the decoded image
+     * @param[out] height  the height of the decoded image
+     * @return             true if success, false if failed
+     */
+    bool decode(uint8_t* buffer, size_t len, uint8_t*& img, int& width, int& height);
 
-	/**
-	 * Reads and decodes a JPEG file on disk.
-	 *
-	 * @param[in]  path    the path to the file
-	 * @param[out] img     the decoded raw image. The memory is allocated inside the function.
-	 * @param[out] width   the width of the decoded image
-	 * @param[out] height  the height of the decoded image
-	 * @return             true if success, false if failed
-	 */
-	bool decode(const char* path, uint8_t*& img, int& width, int& height);
+    /**
+     * Reads and decodes a JPEG image through file descriptor.
+     *
+     * @param[in]  file    the file descriptor
+     * @param[out] img     the decoded raw image. The memory is allocated inside the function.
+     * @param[out] width   the width of the decoded image
+     * @param[out] height  the height of the decoded image
+     * @return             true if success, false if failed
+     */
+    bool decode(FILE* file, uint8_t*& img, int& width, int& height);
+
+    /**
+     * Reads and decodes a JPEG file on disk.
+     *
+     * @param[in]  path    the path to the file
+     * @param[out] img     the decoded raw image. The memory is allocated inside the function.
+     * @param[out] width   the width of the decoded image
+     * @param[out] height  the height of the decoded image
+     * @return             true if success, false if failed
+     */
+    bool decode(const char* path, uint8_t*& img, int& width, int& height);
 
 private:
-	JpegDec(const JpegDec&);
-	void operator=(const JpegDec&);
+    bool decode(uint8_t*& img, int& width, int& height);
 
-	bool decode(uint8_t*& img, int& width, int& height);
+    jpeg_decompress_struct decInfo;
+    jpeg_error_mgr errMgr;
 
-	jpeg_decompress_struct decInfo;
-	jpeg_error_mgr errMgr;
-
-	J_COLOR_SPACE colorSpace;
+    J_COLOR_SPACE colorSpace = JCS_RGB;
 };
 
-} // namespace jpegutil
+}
 
 #endif // JPEGDEC_H_
