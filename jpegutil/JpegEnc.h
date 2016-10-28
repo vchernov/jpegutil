@@ -1,9 +1,9 @@
 #ifndef JPEGENC_H_
 #define JPEGENC_H_
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstdint>
 
 #include <jpeglib.h>
 

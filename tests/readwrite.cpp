@@ -1,13 +1,19 @@
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 
 #include "../jpegutil/JpegDec.h"
 #include "../jpegutil/JpegEnc.h"
 
-int main(int, char**) {
-    using namespace jpegutil;
+using namespace jpegutil;
 
-    const char* fn = "test.jpeg";
+int main(int argc, char** argv) {
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " output_file" << std::endl;
+        return 0;
+    }
+
+    const char* testFileName = argv[1];
+
     const int imgWidth = 512;
     const int imgHeight = 256;
 
@@ -19,7 +25,7 @@ int main(int, char**) {
 
     JpegEnc* enc = new JpegEnc();
     enc->setColorSpace(JCS_RGB, 3);
-    assert(enc->encode(img, imgWidth, imgHeight, fn));
+    assert(enc->encode(img, imgWidth, imgHeight, testFileName));
     delete enc;
 
     delete[] img;
@@ -29,7 +35,7 @@ int main(int, char**) {
     dec->setColorSpace(JCS_YCbCr);
     int width = 0;
     int height = 0;
-    assert(dec->decode(fn, img, width, height));
+    assert(dec->decode(testFileName, img, width, height));
     assert(img != nullptr);
     assert(width == imgWidth);
     assert(height == imgHeight);

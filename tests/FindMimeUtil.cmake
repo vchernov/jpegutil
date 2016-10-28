@@ -1,0 +1,6 @@
+find_path(MIMEUTIL_INCLUDE_DIR NAMES mimeutil/MimeParser.h)
+
+find_library(MIMEUTIL_LIBRARY NAMES mimeutil)
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(MimeUtil DEFAULT_MSG MIMEUTIL_INCLUDE_DIR MIMEUTIL_LIBRARY)

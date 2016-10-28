@@ -1,9 +1,9 @@
 #ifndef JPEGDECPLANARYCBCR_H_
 #define JPEGDECPLANARYCBCR_H_
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstdint>
 
 #include <jpeglib.h>
 

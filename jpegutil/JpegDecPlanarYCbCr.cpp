@@ -1,6 +1,6 @@
 #include "JpegDecPlanarYCbCr.h"
 
-#include <string.h>
+#include <cstring>
 
 namespace jpegutil {
 

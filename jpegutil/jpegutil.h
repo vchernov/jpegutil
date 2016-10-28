@@ -1,8 +1,8 @@
 #ifndef JPEGUTIL_H_
 #define JPEGUTIL_H_
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 
 #include <jpeglib.h>
 

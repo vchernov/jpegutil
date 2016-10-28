@@ -1,48 +1,50 @@
-#include <assert.h>
-#include <stdio.h>
+#include <cassert>
+#include <cstdio>
 #include <iostream>
+#include <memory>
 
 #include "../jpegutil/JpegDecPlanarYCbCr.h"
+#include "../jpegutil/JpegEnc.h"
+#include "../jpegutil/jpegutil.h"
+
+using namespace jpegutil;
 
 int main(int argc, char** argv) {
-    using namespace jpegutil;
-
-    char const* srcFn = (argc >= 2) ? argv[1] : nullptr;
-    char const* dstFn = (argc >= 3) ? argv[2] : nullptr;
-
-    uint8_t* img = nullptr;
-    int width = 0;
-    int height = 0;
-
-    if (srcFn != nullptr) {
-        FILE* srcFile = fopen(srcFn, "rb");
-        assert(srcFile != NULL);
-
-        JpegDecPlanarYCbCr* dec = new JpegDecPlanarYCbCr();
-        assert(dec->decodeI420(srcFile, img, width, height));
-        delete dec;
-
-        fclose(srcFile);
-    } else {
-        std::cout << "No input file passed to " << argv[0] << std::endl;
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " output_file" << std::endl;
         return 0;
     }
 
-    if (dstFn != nullptr) {
-        FILE* dstFile = fopen(dstFn, "wb");
-        assert(dstFile != nullptr);
+    const char* testFileName = argv[1];
 
-        const int lumLen = width * height;
-        const int chromWidth = width / 2;
-        const int chromHeight = height / 2;
-        const int chromLen = chromWidth * chromHeight;
+    const int origWidth = 256;
+    const int origHeight = 512;
+    const int numComponents = getNumComponents(JCS_YCbCr);
 
-        const size_t dstSize = lumLen + chromLen + chromLen;
-        fwrite(img, 1, dstSize, dstFile);
-
-        fclose(dstFile);
+    const int buffLen = origWidth * origHeight * numComponents;
+    uint8_t* img = new uint8_t[buffLen];
+    for (int i = 0; i < buffLen; i++) {
+        img[i] = (uint8_t)(rand() % 255);
     }
 
+    auto encoder = std::make_unique<JpegEnc>();
+    encoder->setColorSpace(JCS_YCbCr, numComponents);
+    assert(encoder->encode(img, origWidth, origHeight, testFileName));
+
+    delete[] img;
+
+    img = nullptr;
+    int width = 0;
+    int height = 0;
+    FILE* testFile = fopen(testFileName, "rb");
+
+    auto decoder = std::make_unique<JpegDecPlanarYCbCr>();
+    assert(decoder->decodeI420(testFile, img, width, height));
+    assert(img != nullptr);
+    assert(width == origWidth);
+    assert(height == origHeight);
+
+    fclose(testFile);
     delete[] img;
 
     return 0;
